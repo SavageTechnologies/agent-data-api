@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}YouTube Search Results{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">YouTube Search</h1>
+    <form action="{{ url_for('youtube_search') }}" method="get" class="mb-5">
+        <div class="form-group">
+            <label for="query">Query</label>
+            <input type="text" name="query" class="form-control" id="query" value="{{ query }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Search Again</button>
+    </form>
+    <form action="{{ url_for('export_youtube_search') }}" method="get" class="mb-5">
+        <input type="hidden" name="query" value="{{ query }}">
+        <button type="submit" class="btn btn-secondary">Export Results</button>
+    </form>
+
+    <h2 class="mb-4">Results</h2>
+    <div class="list-group">
+        {% for result in search_results %}
+        <div class="list-group-item">
+            <h5 class="mb-1">{{ result.title }}</h5>
+            <p class="mb-1">{{ result.snippet }}</p>
+            <p class="mb-1">Link: <a href="{{ result.link }}" target="_blank">{{ result.link }}</a></p>
+            <img src="{{ result.thumbnail }}" alt="{{ result.title }}">
+        </div>
+        {% else %}
+        <p>No results found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

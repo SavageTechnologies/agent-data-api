@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\app",
+    "\\app\\data",
+    "\\app\\static",
+    "\\app\\templates",
+    "\\flask_session"
+  ],
+  "SelectedNode": "\\app\\routes.py",
+  "PreviewInSolutionExplorer": false
+}

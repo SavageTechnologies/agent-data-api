@@ -1,31 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Agent Search{% endblock %}
+{% block title %}Main Page{% endblock %}
 
 {% block content %}
-    <div class="container mt-5">
-        <h1 class="mb-4">Search for Insurance Agents</h1>
-        <form method="GET" action="{{ url_for('search') }}">
+<div class="container mt-5">
+    <h1 class="mb-4">Agent Connect</h1>
+    <form action="{{ url_for('search') }}" method="get" class="mb-5">
+        <div class="form-group">
             {{ form.hidden_tag() }}
-            <div class="form-group">
-                {{ form.search_query.label(class="form-label") }}
-                {{ form.search_query(class="form-control") }}
-            </div>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-
-        {% if results %}
-            <h2 class="mt-5">Search Results</h2>
-            <ul class="list-group mt-3">
-                {% for agent in results %}
-                    <li class="list-group-item">
-                        <strong>{{ agent.name }}</strong><br>
-                        Email: {{ agent.email }}<br>
-                        Phone: {{ agent.phone }}
-                        <a href="{{ url_for('contact', agent_id=agent._id) }}" class="btn btn-sm btn-info ml-2">Contact</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
+            {{ form.search_query.label(class="form-label") }}
+            {{ form.search_query(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">Search Agents</button>
+    </form>
+</div>
 {% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Search Results for "{{ query }}"</h1>
+    {% if search_results %}
+        <ul class="list-group">
+            {% for agent in search_results %}
+                <li class="list-group-item">
+                    <h5>{{ agent['name'] }}</h5>
+                    <p>Email: {{ agent['email'] }}</p>
+                    <p>Phone: {{ agent['phone'] }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</div>
+{% endblock %}

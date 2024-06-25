@@ -1,24 +1,24 @@
 import os
 import pandas as pd
-from pymongo import MongoClient
+from bson import ObjectId
+from app import db
 
 def import_agents_from_csv(file_path):
-    # Load environment variables
-    from dotenv import load_dotenv
-    load_dotenv()
-
-    # Connect to MongoDB
-    uri = os.getenv("MONGODB_URI")
-    db_name = os.getenv("MONGODB_DATABASE")
-
-    client = MongoClient(uri)
-    db = client[db_name]
-
-    # Read CSV file
     df = pd.read_csv(file_path)
+    agents_collection = db.agents
 
-    # Insert data into the agents collection
-    agents_collection = db['agents']
-    agents_collection.insert_many(df.to_dict('records'))
+    for _, row in df.iterrows():
+        agent = {
+            "name": row.get("name"),
+            "email": row.get("email"),
+            "phone": row.get("phone"),
+            "npn": row.get("NPN"),
+            # Add other fields as necessary
+        }
+        agents_collection.update_one(
+            {"npn": row.get("NPN")},
+            {"$set": agent},
+            upsert=True
+        )
 
-    print("Data imported successfully!")
+    os.remove(file_path)

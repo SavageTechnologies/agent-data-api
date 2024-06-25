@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-connect-app"
+version = "0.1.0"
+description = "A web application to connect and manage insurance agents"
+authors = [
+    { name = "Aaron Sims", email = "asims@enrollmedicare.com" }
+]
+
+[project.dependencies]
+Flask = "^2.0.3"
+flask-session = "^0.4.0"
+flask-wtf = "^0.15.1"
+pymongo = "^4.7.2"
+python-dotenv = "^1.0.1"
+Werkzeug = "^2.0.3"
+pandas = "^1.3.4"
+gunicorn = "^20.1.0"

@@ -12,3 +12,13 @@ class ImportForm(FlaskForm):
 class ContactForm(FlaskForm):
     # Define your contact form fields here
     pass
+
+class SaveSearchForm(FlaskForm):
+    search_name = StringField('Search Name', validators=[DataRequired()])
+    query = StringField('Query', validators=[DataRequired()])
+    location = StringField('Location', validators=[DataRequired()])
+    submit = SubmitField('Save Search')
+
+class YouTubeSearchForm(FlaskForm):
+    query = StringField('Search YouTube', validators=[DataRequired()])
+    submit = SubmitField('Search')

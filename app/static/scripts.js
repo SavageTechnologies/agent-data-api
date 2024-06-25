@@ -1,1 +1,4 @@
-db.agents.createIndex({ name: "text", email: "text" })
+document.addEventListener('DOMContentLoaded', (event) => {
+    // Any JavaScript code needed for the project
+});
+
