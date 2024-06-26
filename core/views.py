@@ -3,6 +3,7 @@ from typing import Optional, Type, TypeVar, Dict
 import orjson
 from django.contrib.auth import login as django_login, logout as django_logout
 from django.http import JsonResponse, HttpResponse
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -21,7 +22,8 @@ class BaseView(View):
     __user: Optional[User] = None
     __cached_json_request: Optional[Dict] = None
 
-    requires_api_key = False
+    requires_login = False
+    redirect_if_not_logged_in = True
 
     @property
     def user(self) -> Optional[User]:
@@ -46,6 +48,10 @@ class BaseView(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         try:
+            if self.requires_login and self.user is None:
+                if self.redirect_if_not_logged_in:
+                    return redirect("/user/login/", permanent=False)
+                raise ServerException.generic_auth_error()
             return super().dispatch(request, *args, **kwargs)
         except ServerException as se:
             if se.has_info:

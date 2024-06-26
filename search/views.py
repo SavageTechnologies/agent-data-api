@@ -7,6 +7,8 @@ from search.serpapi_utils import search_google_local
 # Create your views here.
 
 class GoogleSearchView(BaseView):
+    requires_login = True
+
     def get(self, request, *args, **kwargs):
         query_extra = request.GET.get("query", None)
         query_city = request.GET.get("city", None)

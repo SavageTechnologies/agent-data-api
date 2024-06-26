@@ -14,12 +14,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import path, include
 
 from search.urls import site_urls as search_urls
+from server import settings
+from user.urls import site_urls as user_urls
 from server.index_view import IndexView
 
 
@@ -37,6 +40,12 @@ urlpatterns = [
     path('admin', admin_redirect),
     path('admin/', admin.site.urls),
     path("search/", include(search_urls)),
+    path("user/", include(user_urls)),
     path('', IndexView.as_view()),
-    path('/', IndexView.as_view()),
 ]
+
+
+if settings.ENV == settings.ServerEnv.LOCAL and settings.IS_TEST is False:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
