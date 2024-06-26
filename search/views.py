@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from core.views import BaseView
-from search.serpapi_utils import search_google_local
+from search.serpapi_utils import search_google_local, search_youtube
 
 
 # Create your views here.
@@ -35,4 +35,21 @@ class GoogleSearchView(BaseView):
             context["search_results"] = search_results
 
         return render(request, "serpapi_search.html", context=context)
+
+
+class YoutubeSearchView(BaseView):
+    requires_login = True
+
+    def get(self, request, *args, **kwargs):
+        query_extra = request.GET.get("query", None)
+        context = {
+            "search_results": None,
+            "query": query_extra,
+        }
+
+        if query_extra is not None and len(query_extra) > 0:
+            search_results = search_youtube(query_extra)
+            context["search_results"] = search_results
+
+        return render(request, "youtube_search.html", context=context)
 

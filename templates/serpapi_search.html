@@ -42,7 +42,12 @@
                     <h5 class="mb-1">{{ result.title }}</h5>
                     <p class="mb-1">{{ result.address }}</p>
                     <p class="mb-1">Phone: <a href="tel:{{ result.phone }}">{{ result.phone }}</a></p>
+
+                    {% if result.website %}
                     <p class="mb-1">Website: <a href="{{ result.website }}" target="_blank">{{ result.website }}</a></p>
+                    {% else %}
+                    <p class="mb-1">Website:</p>
+                    {% endif %}
                     <small>{{ result.type }} - {{ result.rating }} stars ({{ result.reviews }} reviews)</small>
                 </div>
 

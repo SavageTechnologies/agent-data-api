@@ -5,30 +5,33 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="mb-4">YouTube Search</h1>
-    <form action="{{ url_for('youtube_search') }}" method="get" class="mb-5">
+    <form method="get" class="mb-5">
         <div class="form-group">
             <label for="query">Query</label>
-            <input type="text" name="query" class="form-control" id="query" value="{{ query }}">
+            <input type="text" name="query" class="form-control" id="query" value="{{ query|default:"" }}">
         </div>
-        <button type="submit" class="btn btn-primary">Search Again</button>
-    </form>
-    <form action="{{ url_for('export_youtube_search') }}" method="get" class="mb-5">
-        <input type="hidden" name="query" value="{{ query }}">
-        <button type="submit" class="btn btn-secondary">Export Results</button>
+        <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    <h2 class="mb-4">Results</h2>
-    <div class="list-group">
-        {% for result in search_results %}
-        <div class="list-group-item">
-            <h5 class="mb-1">{{ result.title }}</h5>
-            <p class="mb-1">{{ result.snippet }}</p>
-            <p class="mb-1">Link: <a href="{{ result.link }}" target="_blank">{{ result.link }}</a></p>
-            <img src="{{ result.thumbnail }}" alt="{{ result.title }}">
+    {% if search_results is not None %}
+        <div class="list-group">
+            <h2 class="mb-4">Results</h2>
+            <div class="list-group">
+                {% for result in search_results %}
+                <div class="list-group-item">
+                    <h5 class="mb-1">{{ result.title|default:"" }}</h5>
+                    <p class="mb-1">{{ result.description|default:"" }}</p>
+                    <p class="mb-1">Link: <a href="{{ result.link }}" target="_blank">{{ result.link }}</a></p>
+                    {% if result.thumbnail %}
+                        <img src="{{ result.thumbnail }}" alt="{{ result.title }}">
+                    {% endif %}
+                </div>
+
+                {% empty %}
+                    <p>No results found.</p>
+                {% endfor %}
+            </div>
         </div>
-        {% else %}
-        <p>No results found.</p>
-        {% endfor %}
-    </div>
+    {% endif %}
 </div>
 {% endblock %}

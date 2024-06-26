@@ -8,5 +8,13 @@ from agent.models import Agent
 
 @admin.register(Agent)
 class AgentAdmin(admin.ModelAdmin):
-    pass
-
+    fields = ["id", "name", "email", "npn", "phone_number", "updated_at", "created_at"]
+    readonly_fields = ["id", "updated_at", "created_at"]
+    list_display = ["id", "name", "email", "npn", "phone_number", "updated_at", "created_at"]
+    list_editable = ["name", "email", "npn", "phone_number"]
+    search_fields = [
+        "name",
+        "email",
+        "npn",
+        "phone_number",
+    ]

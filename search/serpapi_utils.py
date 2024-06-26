@@ -26,11 +26,11 @@ def search_google_local(query, location):
     formatted_results = []
     for result in results.get('local_results', []):
         print("Processing result:", result)
-        website = result.get("website", "No website available")
-        print("Extracted website:", website)
-        if website != "No website available" and not website.startswith(('http://', 'https://')):
-            website = 'http://' + website
-        
+        if "links" in result and "website" in result.get("links"):
+            website = result.get("links").get("website")
+        else:
+            website = None
+
         formatted_results.append({
             "title": result.get("title"),
             "address": result.get("address", "No address available"),
@@ -57,8 +57,8 @@ def search_youtube(query):
         formatted_results.append({
             "title": result.get("title"),
             "link": result.get("link"),
-            "snippet": result.get("snippet"),
-            "thumbnail": result.get("thumbnail", {}).get("thumbnails", [{}])[0].get("url")
+            "description": result.get("description"),
+            "thumbnail": result.get("thumbnail", {}).get("static")
         })
 
     return formatted_results[:15]

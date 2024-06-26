@@ -5,13 +5,29 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="mb-4">Agent Connect</h1>
-    <form action="/" method="get" class="mb-5">
+    <form method="get" class="mb-5">
         <div class="form-group">
-{#            {{ form.hidden_tag() }}#}
-{#            {{ form.search_query.label(class="form-label") }}#}
-{#            {{ form.search_query(class="form-control") }}#}
+            <label for="name">Name</label>
+            <input type="text" name="name" class="form-control" id="name" value="{{ name|default:"" }}">
         </div>
         <button type="submit" class="btn btn-primary">Search Agents</button>
     </form>
 </div>
+
+
+{% if search_results is not None %}
+    <h2 class="mb-4">Results</h2>
+    <div class="list-group">
+        {% for result in search_results %}
+                <li class="list-group-item">
+                    <h5>{{ result.name }}</h5>
+                    <p>Email: {{ result.email }}</p>
+                    <p>Phone: {{ result.phone_number }}</p>
+                    <p>NPN: {{ result.npn }}</p>
+                </li>
+        {% empty %}
+            <p>No results found.</p>
+        {% endfor %}
+    </div>
+{% endif %}
 {% endblock %}
