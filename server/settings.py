@@ -65,20 +65,20 @@ if ENV == ServerEnv.PROD:
         "http://0.0.0.0:8080",
         "http://agent-connect-prod-eapqqgtmka-uw.a.run.app",
         "https://agent-connect-prod-eapqqgtmka-uw.a.run.app",
-        "http://agentexcel.com/",
-        "https://agentexcel.com/",
-        "http://www.agentexcel.com/",
-        "https://www.agentexcel.com/",
+        "http://agentexcel.com",
+        "https://agentexcel.com",
+        "http://www.agentexcel.com",
+        "https://www.agentexcel.com",
     ]
     CORS_ALLOWED_ORIGINS = [
         "http://127.0.0.1:8080",
         "http://0.0.0.0:8080",
         "http://agent-connect-prod-eapqqgtmka-uw.a.run.app",
         "https://agent-connect-prod-eapqqgtmka-uw.a.run.app",
-        "http://agentexcel.com/",
-        "https://agentexcel.com/",
-        "http://www.agentexcel.com/",
-        "https://www.agentexcel.com/",
+        "http://agentexcel.com",
+        "https://agentexcel.com",
+        "http://www.agentexcel.com",
+        "https://www.agentexcel.com",
     ]
     BASE_URL = "TODO"
 
