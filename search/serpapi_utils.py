@@ -7,14 +7,15 @@ from server.settings import SERPAPI_KEY
 load_dotenv()
 
 
-def search_google_local(query, location):
+def search_google_local(query, location, limit):
     params = {
         "engine": "google_local",
         "q": query,
         "location": location,
         "api_key": SERPAPI_KEY,
         "output": "json",
-        "source": "python"
+        "source": "python",
+        "num": limit,
     }
     search = GoogleSearch(params)
     results = search.get_dict()
@@ -40,14 +41,15 @@ def search_google_local(query, location):
             "rating": result.get("rating", "No rating available"),
             "reviews": result.get("reviews", "No reviews available"),
         })
-    return formatted_results[:15]
+    return formatted_results[:limit]
 
 
-def search_youtube(query):
+def search_youtube(query, limit: int):
     params = {
         "engine": "youtube",
         "search_query": query,
-        "api_key": SERPAPI_KEY
+        "api_key": SERPAPI_KEY,
+        "num": limit,
     }
     search = GoogleSearch(params)
     results = search.get_dict()
@@ -61,4 +63,4 @@ def search_youtube(query):
             "thumbnail": result.get("thumbnail", {}).get("static")
         })
 
-    return formatted_results[:15]
+    return formatted_results[:limit]

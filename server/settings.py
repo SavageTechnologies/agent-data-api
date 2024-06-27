@@ -260,10 +260,9 @@ elif ENV == ServerEnv.STAGING:
     STATIC_ROOT = "./static"
 elif ENV == ServerEnv.LOCAL:
     STATIC_URL = "static/"
-    STATIC_ROOT = "./static"
-    # STATICFILES_DIRS = [
-    #     os.path.join(BASE_DIR, 'static')
-    # ]
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static')
+    ]
 elif ENV == ServerEnv.COLLECT_STATIC:
     GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME", "agent-connect-prod")
     STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/static/"

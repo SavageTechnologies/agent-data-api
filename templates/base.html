@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Agent Connect{% endblock %}</title>
+    <title>{% block title %}Agent Excel{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static "css/styles.css" %}">
 </head>
@@ -13,7 +13,7 @@
     {% if not hide_header %}
         <header class="sticky-top bg-primary text-white py-2">
             <div class="container d-flex justify-content-between align-items-center">
-                <h1 class="h4 mb-0">Agent Connect</h1>
+                <h1 class="h4 mb-0">Agent Excel</h1>
                 <nav>
                     <a href="/" class="btn btn-light ml-2">Home</a>
 {#                    <a href="/imports/" class="btn btn-light ml-2">Import</a>#}
@@ -30,5 +30,9 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{% static "js/common.js" %}?v=1.0.0"></script>
+    <script>
+        {% block extra_js %}{% endblock %}
+    </script>
 </body>
 </html>

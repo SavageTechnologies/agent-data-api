@@ -46,6 +46,6 @@ urlpatterns = [
 
 
 if settings.ENV == settings.ServerEnv.LOCAL and settings.IS_TEST is False:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root="static")
 
 
