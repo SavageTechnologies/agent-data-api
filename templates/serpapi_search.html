@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="mb-4">Google Search</h1>
-    <form method="get" class="mb-5">
+    <div class="mb-5">
         <div class="form-row">
             <div class="col-md-4 mb-3">
                 <label for="query">Query</label>
@@ -24,44 +24,114 @@
                 <input type="text" name="city" class="form-control" id="city" value="{{ city|default:"" }}">
             </div>
         </div>
-        <div class="form-group">
-            <label for="limit">Amount</label>
-            <select name="limit" id="limit">
-              <option value="15" {% if limit == 15 %} selected="selected" {% endif %}>15</option>
-              <option value="25" {% if limit == 25 %} selected="selected" {% endif %}>25</option>
-              <option value="50" {% if limit == 50 %} selected="selected" {% endif %}>50</option>
-              <option value="75" {% if limit == 75 %} selected="selected" {% endif %}>75</option>
-              <option value="100" {% if limit == 100 %} selected="selected" {% endif %}>100</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+        <button onclick="freshFetch();" class="btn btn-primary">Search</button>
+    </div>
 
-    {% if search_results is not None %}
-        <h2 class="mb-4">Results <button onclick="ExportCSV('export', exportData);" class="btn btn-primary">Export</button> </h2>
-        <div class="list-group">
-            {% for result in search_results %}
-                <div class="list-group-item">
-                    <h5 class="mb-1">{{ result.title }}</h5>
-                    <p class="mb-1">{{ result.address }}</p>
-                    <p class="mb-1">Phone: <a href="tel:{{ result.phone }}">{{ result.phone }}</a></p>
-
-                    {% if result.website %}
-                    <p class="mb-1">Website: <a href="{{ result.website }}" target="_blank">{{ result.website }}</a></p>
-                    {% else %}
-                    <p class="mb-1">Website:</p>
-                    {% endif %}
-                    <small>{{ result.type }} - {{ result.rating }} stars ({{ result.reviews }} reviews)</small>
-                </div>
-
-            {% empty %}
-                <p>No results found.</p>
-            {% endfor %}
-        </div>
-    {% endif %}
+    <h2 class="mb-4">Results <button onclick="ExportData();" class="btn btn-primary">Export</button> </h2>
+    <div class="list-group" id="results-container" style="margin-bottom: 32px;">
+    </div>
 </div>
 {% endblock %}
 
-{% block extra_js %}
-    const exportData = {{ export_data|safe }}
+{% block end_of_body %}
+    <script>
+        const queryInput = document.querySelector("#query");
+        const countryInput = document.querySelector("#country");
+        const stateInput = document.querySelector("#state");
+        const cityInput = document.querySelector("#city");
+        const resultsContainer = document.querySelector("#results-container");
+        let results = [];
+        let pageId = null;
+        let searchIndex = 1;
+        let fetchingNextPage = false;
+        window.addEventListener("scroll", function (params) {
+            if (window.scrollY > (document.body.scrollHeight - window.innerHeight) * 0.8) {
+                fetchNext();
+            }
+        });
+
+        function ExportData() {
+            const data = [['Title', 'Address', 'Phone', 'Website', 'Type', 'Rating', 'Reviews']]
+            for (let i = 0; i < results.length; i++) {
+                const r = results[i];
+                data.push([r['title'], r['address'], r['phone'], r['website'], r['type'], r['rating'], r['reviews']])
+            }
+            ExportCSV('export', data);
+        }
+        async function freshFetch() {
+            searchIndex = searchIndex + 1;
+            const fetchIndex = searchIndex;
+            results = [];
+            resultsContainer.innerHTML = "";
+            fetchingNextPage = false;
+            pageId = null;
+            const url = new URL(window.location)
+            url.searchParams.set("query", queryInput.value)
+            url.searchParams.set("city", cityInput.value)
+            url.searchParams.set("state", stateInput.value)
+            url.searchParams.set("country", countryInput.value)
+            history.replaceState(null, '', url);
+            const requestResults = await LoadLocalGoogleSearch(queryInput.value, cityInput.value, stateInput.value, countryInput.value, pageId);
+            if (fetchIndex !== searchIndex) {
+                return;
+            }
+
+            pageId = requestResults.next;
+            for (let i = 0; i < requestResults.results.length; i++) {
+                const r = requestResults.results[i];
+                results.push(r);
+                addNewResult(r);
+            }
+        }
+
+        async function fetchNext() {
+            if (results.length === 0 || pageId === null || fetchingNextPage) {
+                return;
+            }
+            fetchingNextPage = true;
+            searchIndex = searchIndex + 1;
+            const fetchIndex = searchIndex;
+
+
+            const requestResults = await LoadLocalGoogleSearch(queryInput.value, cityInput.value, stateInput.value, countryInput.value, pageId);
+            if (fetchIndex !== searchIndex) {
+                return;
+            }
+
+            pageId = requestResults.next;
+            for (let i = 0; i < requestResults.results.length; i++) {
+                const r = requestResults.results[i];
+                results.push(r);
+                addNewResult(r);
+            }
+            fetchingNextPage = false;
+        }
+
+
+        function addNewResult(result) {
+            let phoneHtml = `<p class="mb-1">Phone:</p>`
+            if (result.phone) {
+                phoneHtml = `<p class="mb-1">Phone: <a href="tel:${result.phone}">${result.phone}</a></p>`
+            }
+            let websiteHtml = `<p class="mb-1">Website:</p>`
+            if (result.website) {
+                websiteHtml = `<p class="mb-1">Website: <a href="${result.website}" target="_blank">${result.website}</a></p>`
+            }
+            const html = `<h5 class="mb-1">${result.title}</h5>
+                        <p class="mb-1">${result.address}</p>
+                        ${phoneHtml}
+                        ${websiteHtml}
+                        <small>${result.type} - ${result.rating} stars (${result.reviews} reviews)</small>`;
+
+            const div = document.createElement('div');
+            div.classList.add("list-group-item")
+            div.innerHTML = html.trim();
+            resultsContainer.appendChild(div);
+        }
+
+        const loadUrl = new URL(window.location)
+        if (loadUrl.searchParams.get("query") && loadUrl.searchParams.get("query").length > 0) {
+            freshFetch();
+        }
+    </script>
 {% endblock %}

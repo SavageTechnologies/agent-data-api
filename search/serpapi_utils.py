@@ -7,7 +7,7 @@ from server.settings import SERPAPI_KEY
 load_dotenv()
 
 
-def search_google_local(query, location, limit):
+def search_google_local(query, location, page_id: int):
     params = {
         "engine": "google_local",
         "q": query,
@@ -15,7 +15,7 @@ def search_google_local(query, location, limit):
         "api_key": SERPAPI_KEY,
         "output": "json",
         "source": "python",
-        "num": limit,
+        "start": page_id,
     }
     search = GoogleSearch(params)
     results = search.get_dict()
@@ -26,7 +26,6 @@ def search_google_local(query, location, limit):
 
     formatted_results = []
     for result in results.get('local_results', []):
-        print("Processing result:", result)
         if "links" in result and "website" in result.get("links"):
             website = result.get("links").get("website")
         else:
@@ -35,21 +34,21 @@ def search_google_local(query, location, limit):
         formatted_results.append({
             "title": result.get("title"),
             "address": result.get("address", "No address available"),
-            "phone": result.get("phone", "No phone number available"),
+            "phone": result.get("phone", None),
             "website": website,
             "type": result.get("type", "No type available"),
             "rating": result.get("rating", "No rating available"),
             "reviews": result.get("reviews", "No reviews available"),
         })
-    return formatted_results[:limit]
+    return formatted_results
 
 
-def search_youtube(query, limit: int):
+def search_youtube(query, next_id):
     params = {
         "engine": "youtube",
         "search_query": query,
         "api_key": SERPAPI_KEY,
-        "num": limit,
+        "sp": next_id,
     }
     search = GoogleSearch(params)
     results = search.get_dict()
@@ -63,4 +62,4 @@ def search_youtube(query, limit: int):
             "thumbnail": result.get("thumbnail", {}).get("static")
         })
 
-    return formatted_results[:limit]
+    return formatted_results, results.get("pagination").get("next_page_token")

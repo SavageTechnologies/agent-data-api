@@ -20,7 +20,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import path, include
 
-from search.urls import site_urls as search_urls
+from search.urls import site_urls as search_urls, api_urls as search_api_urls
 from server import settings
 from user.urls import site_urls as user_urls
 from server.index_view import IndexView
@@ -38,6 +38,7 @@ urlpatterns = [
     path('ping', ping),
     path('ping/', ping),
     path('admin', admin_redirect),
+    path('api/v1/search/', include(search_api_urls)),
     path('admin/', admin.site.urls),
     path("search/", include(search_urls)),
     path("user/", include(user_urls)),
