@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm AS builder
+FROM python:3.13-slim-bookworm AS builder
 
 RUN apt-get update
 
@@ -14,7 +14,7 @@ RUN pip install --upgrade pip
 COPY requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
-FROM python:3.12-slim-bookworm as app
+FROM python:3.13-slim-bookworm as app
 
 ENV PYTHONUNBUFFERED True
 
